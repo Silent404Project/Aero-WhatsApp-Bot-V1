@@ -1,55 +1,235 @@
-# Silent404 WhatsApp Bot v1.1.0
+# Aero WhatsApp Bot V1
 
-Bot ESM berbasis `@silent404/baileys` 7.0.1 (login Pairing Code / QR).
+Bot WhatsApp berbasis **Node.js (ESM)** dan `@silent404/baileys`, dengan pilihan login **Pairing Code** atau **QR Code**.
 
-## Instalasi
+Repository: https://github.com/Silent404Project/Aero-WhatsApp-Bot-V1
+
+## Fitur
+
+- Login WhatsApp menggunakan Pairing Code atau QR Code.
+- Sistem plugin untuk command bot.
+- Informasi log command, jenis chat, JID, PN, dan LID.
+- Pengaturan owner, prefix, nama bot, dan konfigurasi lainnya melalui `config.js`.
+- Fitur grup seperti anti-link, hidetag, dan pengelolaan grup.
+- Database lokal untuk menyimpan pengaturan bot.
+
+## Tutorial Instalasi di Termux
+
+Ikuti langkah-langkah berikut secara berurutan.
+
+### 1. Install Termux
+
+Disarankan menggunakan Termux versi terbaru dari sumber resmi seperti F-Droid atau GitHub Termux.
+
+Buka Termux, lalu jalankan:
+
 ```bash
-npm install ./silent404-baileys-7_0_1.tgz   # Baileys lokal kamu (Node >= 20)
+pkg update && pkg upgrade -y
+```
+
+### 2. Install kebutuhan
+
+Install Git dan Node.js:
+
+```bash
+pkg install git nodejs-lts -y
+```
+
+Periksa apakah instalasi berhasil:
+
+```bash
+node -v
+npm -v
+git --version
+```
+
+**Catatan:** Bot ini membutuhkan **Node.js versi 20 atau lebih baru**. Pastikan hasil `node -v` menunjukkan versi 20+.
+
+Jika perintah `nodejs-lts` tidak tersedia di repositori Termux yang digunakan, perbarui Termux dan repositorinya terlebih dahulu.
+
+### 3. Clone repository
+
+Download source code dari GitHub:
+
+```bash
+git clone https://github.com/Silent404Project/Aero-WhatsApp-Bot-V1.git
+```
+
+Masuk ke folder project:
+
+```bash
+cd Aero-WhatsApp-Bot-V1
+```
+
+Pastikan file project terlihat:
+
+```bash
+ls
+```
+
+### 4. Install dependency
+
+Jalankan perintah:
+
+```bash
+npm install
+```
+
+Tunggu sampai proses instalasi selesai. Pastikan tidak ada error sebelum melanjutkan.
+
+### 5. Atur konfigurasi bot
+
+Buka file konfigurasi:
+
+```bash
+nano config.js
+```
+
+Sesuaikan bagian berikut dengan kebutuhan:
+
+```javascript
+export default {
+  botname: 'Aero WhatsApp Bot',
+  owner: [
+    '628xxxxxxxxxx'
+  ],
+  prefix: '.',
+
+  // Konfigurasi lainnya tetap seperti bawaan
+};
+```
+
+Keterangan:
+
+- `botname`: nama bot.
+- `owner`: nomor WhatsApp pemilik bot, gunakan format internasional tanpa tanda `+`, spasi, atau strip. Contoh: `6281234567890`.
+- `prefix`: awalan command bot, bawaan menggunakan titik (`.`).
+
+Jangan menghapus konfigurasi lain yang sudah ada jika tidak memahami fungsinya.
+
+Simpan file di Nano dengan menekan `CTRL + O`, tekan `Enter`, lalu `CTRL + X`.
+
+### 6. Jalankan bot
+
+Setelah konfigurasi selesai, jalankan:
+
+```bash
+npm start
+```
+
+Pada proses pertama, terminal akan menampilkan pilihan metode login:
+
+```text
+[1] Pairing Code
+[2] QR Code
+Pilih metode login (1/2):
+```
+
+Pilih salah satu metode berikut.
+
+#### Login dengan Pairing Code
+
+1. Ketik `1`, lalu tekan `Enter`.
+2. Masukkan nomor WhatsApp dengan format internasional, misalnya `6281234567890`.
+3. Tunggu sampai Pairing Code muncul di Termux.
+4. Buka WhatsApp pada HP yang akan ditautkan.
+5. Masuk ke **Perangkat tertaut**.
+6. Pilih **Tautkan perangkat**, lalu pilih opsi **Tautkan dengan nomor telepon**.
+7. Masukkan Pairing Code yang tampil di Termux.
+
+#### Login dengan QR Code
+
+1. Ketik `2`, lalu tekan `Enter`.
+2. Tunggu QR Code muncul di terminal.
+3. Buka WhatsApp pada HP yang akan ditautkan.
+4. Masuk ke **Perangkat tertaut** → **Tautkan perangkat**.
+5. Scan QR Code yang ditampilkan Termux.
+
+Jika berhasil, terminal akan menampilkan informasi bahwa bot telah terhubung.
+
+## Menjalankan kembali bot
+
+Setelah bot pernah berhasil login, session akan disimpan di folder `session`. Untuk menjalankan bot kembali, masuk ke folder project lalu jalankan:
+
+```bash
+cd ~/Aero-WhatsApp-Bot-V1
+npm start
+```
+
+Session yang masih valid tidak perlu ditautkan ulang. Jangan menghapus folder `session` jika ingin mempertahankan koneksi WhatsApp.
+
+## Menghentikan bot
+
+Tekan:
+
+```text
+CTRL + C
+```
+
+## Memperbarui source code
+
+Jika ingin mengambil pembaruan dari GitHub:
+
+```bash
+cd ~/Aero-WhatsApp-Bot-V1
+git pull
 npm install
 npm start
 ```
-Edit `config.js`: `owner`, `botname`, `prefix`, dan blok `channel` / `style`.
 
-## Style semua balasan (Fake Channel)
-Semua balasan (termasuk error, tombol, anti-link, hasil JPM) dikirim via `Lib/style.js`:
-- `externalAdReply` dengan thumbnail `https://files.catbox.moe/fhht0s.png` + link channel
-- `forwardedNewsletterMessageInfo` (JID & nama channel diambil otomatis dari invite code lewat `sock.newsletterMetadata`)
-- Quote template palsu `newsletterAdminInviteMessage` (QuoteTemplate Fake Channel)
-- `style.quoteMode: 'real'` untuk kembali mengutip pesan asli pengguna; `style.largeThumbnail: true` untuk thumbnail besar.
+Sebaiknya cadangkan `config.js` dan folder `session` sebelum melakukan perubahan besar. Jika ada konflik saat `git pull`, selesaikan konflik terlebih dahulu dan jangan menimpa konfigurasi atau session secara tidak sengaja.
 
-## Command
-| Command | Keterangan |
-|---|---|
-| `.tourl` | Kirim/balas media → upload catbox.moe, hasil dengan tombol **Salin Link** & **Buka Link** |
-| `.jpmht` / `.jpmtag` | JPM + hidetag: kirim teks/gambar/video ke semua grup dengan mention semua anggota (grup di `jpmBlacklist` dilewati) — owner |
-| `.bljpm` / `.delbljpm` | Tambah / hapus blacklist grup lewat tombol pilihan (tersimpan permanen di `database/db.json`; berlaku untuk jpm, jpmht, swgc, pushkontak) — owner |
-| `.pushkontak` | Teks/gambar/video → chat pribadi semua member non-admin grup pilihan (`.pushkontak stop` untuk berhenti, jeda `pushDelay`) — owner |
-| `.savecontact [awalan] [nomor awal]` | Di grup: simpan semua member sebagai kontak "Member 1, 2, 3…" (via `addOrEditContact` + `saveOnPrimaryAddressbook`), ada konfirmasi dan file `.vcf` cadangan — owner |
-| `.setjedapush` / `.setjedajpm` | Atur jeda antar pesan untuk pushkontak / jpm & jpmht, contoh `.setjedapush 5detik`, `.setjedajpm 1500ms`, `.setjedapush 1menit` (tersimpan permanen) — owner |
-| `.joinall` | Balas chat berisi satu/banyak link grup → bot gabung semua (memakai `sock.autoJoin`, jeda `joinDelay`) — owner |
-| `.swgc teks` / media | Posting Status Grup (`groupStatusMessageV2`). Tombol **Semua Grup** / **Target Grup** — owner |
-| `.antilink on/off` `kick/nokick` | Anti link grup per-grup, tersimpan di `database/db.json` — admin/owner |
-| `.hidetag teks` | Mention semua anggota tanpa tag terlihat (admin/owner) |
-| `.cekidch <link>` | Ambil ID channel dari link channel |
-| `.menu .add .kick .statsgrup .cekchat .cekuser .jpm .bljpm` | Bawaan |
+## Troubleshooting
 
-### Detail `.swgc`
-- Teks: `.swgc halo semua`; media: kirim/balas gambar atau video dengan `.swgc [teks opsional]`.
-- **Target Grup**: pilih 1 grup lewat daftar, atau banyak grup: `.swgc send <kode> 1,3,5-8`.
-- Grup di `jpmBlacklist` dilewati. Jeda antar grup: `swgcDelay`.
+**1. `node: command not found`**
 
-### Catatan
-- Anti link: bot harus admin. Link ke grup itu sendiri diizinkan; admin & owner dikecualikan.
-- Tombol native flow bergantung versi klien WhatsApp; jika gagal terkirim, bot otomatis fallback ke teks.
-- Gunakan `.joinall`, `.swgc`, `.jpm` secukupnya (jeda sudah diatur) — aksi massal berisiko pembatasan akun.
+Install Node.js:
 
-## Owner
-- Akun yang dipakai login bot otomatis menjadi owner (ketik command dari nomor bot sendiri, termasuk di chat "Pesan ke diri sendiri").
-- Nomor lain dapat ditambahkan di `config.owner` (format `628xxxx`).
+```bash
+pkg install nodejs-lts -y
+```
 
-## waVersion (opsional)
-Biarkan `waVersion: null`. Isi hanya bila log menampilkan `Code: 405`, misalnya `waVersion: [2, 3000, 1035194821]`. Code 428/515 saat login itu normal (bot menyambung ulang sendiri).
+**2. Versi Node.js di bawah 20**
 
-## Mode & Menu
-- `.self` : hanya owner (termasuk akun bot) yang dilayani; `.public` : semua pengguna. Tersimpan di `database/db.json`. Anti link tetap berjalan di kedua mode.
-- `.menu` menampilkan info singkat + tombol **Select Menu** dan **Channel Developer** (Group / Owner / Main / All). Bisa juga langsung: `.menu group`, `.menu owner`, `.menu main`, `.menu all`.
+Perbarui paket Termux, lalu install Node.js LTS:
+
+```bash
+pkg update && pkg upgrade -y
+pkg install nodejs-lts -y
+node -v
+```
+
+**3. Error dependency atau `Cannot find package`**
+
+Pastikan berada di folder project, lalu jalankan:
+
+```bash
+npm install
+```
+
+**4. Pairing Code atau QR tidak muncul**
+
+Pastikan koneksi internet stabil, tunggu proses koneksi, lalu periksa pesan error di terminal. Jika sesi login sebelumnya gagal dan belum terdaftar, bot akan membersihkan session yang tidak valid saat dijalankan kembali.
+
+**5. Koneksi terputus**
+
+Bot akan mencoba menyambungkan ulang secara otomatis. Pastikan Termux tetap berjalan dan koneksi internet tersedia.
+
+**6. WhatsApp menampilkan perangkat tertaut yang tidak dikenal**
+
+Periksa daftar **Perangkat tertaut** di WhatsApp dan keluarkan perangkat yang tidak kamu kenali.
+
+## Catatan Penting
+
+- Jangan membagikan folder `session`, file kredensial, atau Pairing Code kepada siapa pun. Data tersebut dapat memberikan akses ke akun WhatsApp yang ditautkan.
+- Jangan mengunggah session atau kredensial ke repository publik.
+- Gunakan bot secara bertanggung jawab. Pengiriman pesan massal atau aktivitas otomatis yang berlebihan dapat menyebabkan pembatasan akun WhatsApp.
+- Beberapa fitur dapat bergantung pada dukungan versi aplikasi WhatsApp.
+- Agar bot tetap berjalan, jangan tutup paksa Termux. Android juga dapat menghentikan proses di latar belakang karena pengaturan penghemat baterai.
+
+## Developer
+
+**Silent404Project**
+
+- GitHub: https://github.com/Silent404Project
+- Repository: https://github.com/Silent404Project/Aero-WhatsApp-Bot-V1
